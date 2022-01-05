@@ -3,11 +3,11 @@ package io.dailyworker.flight.repositories;
 import io.dailyworker.flight.domain.AirPlane;
 import io.dailyworker.flight.domain.AirPort;
 import io.dailyworker.flight.domain.FlightSchedule;
-import io.dailyworker.flight.domain.dto.FlightScheduleInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +27,7 @@ class FlightScheduleRepositoryTest {
     AirPlanRepository airPlanRepository;
 
     @Test
+    @Transactional
     @DisplayName("성공적으로 비행 일정 리스트를 가져올 수 있다.")
     public void searchFlightScheduleTest() throws Exception {
         //given
@@ -45,9 +46,15 @@ class FlightScheduleRepositoryTest {
 
         //when
         List<FlightSchedule> flightSchedules = flightScheduleRepository.findByFlightScheduleInfo(departAirPort, arriveAirPort, departDate, arriveDate);
-
+        FlightSchedule expectedFlightSchedule = flightSchedules.get(0);
 
         //then
-        assertTrue(flightSchedules.size() != 0);
+        assertAll(
+                () -> assertEquals(expectedFlightSchedule.getAirPlane(), airPlane),
+                () -> assertEquals(expectedFlightSchedule.getArriveAirPort().getName(), arriveAirPort.getName()),
+                () -> assertEquals(expectedFlightSchedule.getDepartAirPort().getName(), departAirPort.getName()),
+                () -> assertEquals(expectedFlightSchedule.getArriveDate(), arriveDate),
+                () -> assertEquals(expectedFlightSchedule.getDepartDate(), departDate)
+        );
     }
 }
