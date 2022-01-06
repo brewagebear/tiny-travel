@@ -1,9 +1,9 @@
 package io.dailyworker.flight.repositories.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.dailyworker.flight.domain.*;
-import io.dailyworker.flight.domain.dto.FlightScheduleInfo;
-import io.dailyworker.flight.repositories.FlightScheduleRepository;
+import io.dailyworker.flight.domain.AirPort;
+import io.dailyworker.flight.domain.FlightSchedule;
+import io.dailyworker.flight.domain.QFlightSchedule;
 import io.dailyworker.flight.repositories.dsl.CustomFlightScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -18,7 +18,7 @@ public class FlightScheduleRepositoryImpl implements CustomFlightScheduleReposit
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<FlightSchedule> findByFlightScheduleInfo(AirPort departAirPort, AirPort arriveAirPort, LocalDate departDate, LocalDate arriveDate) {
+    public List<FlightSchedule> findFlightSchedule(AirPort departAirPort, AirPort arriveAirPort, LocalDate departDate, LocalDate arriveDate) {
         QFlightSchedule flightSchedule = QFlightSchedule.flightSchedule;
 
         return queryFactory.selectFrom(flightSchedule)
