@@ -8,6 +8,7 @@ import io.dailyworker.flight.repositories.dsl.CustomFlightScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,6 +28,20 @@ public class FlightScheduleRepositoryImpl implements CustomFlightScheduleReposit
                                 .and(flightSchedule.arriveAirPort.eq(arriveAirPort))
                                 .and(flightSchedule.departDate.between(departDate, arriveDate))
                                 .and(flightSchedule.arriveDate.between(departDate, arriveDate))
+                ).fetch();
+    }
+
+    @Override
+    public List<FlightSchedule> findOneWayFlightSchedule(@NotNull AirPort departAirport,
+                                                         @NotNull AirPort arriveAirport,
+                                                         @NotNull LocalDate departDate) {
+        QFlightSchedule flightSchedule = QFlightSchedule.flightSchedule;
+
+        return queryFactory.selectFrom(flightSchedule)
+                .where(
+                        flightSchedule.departAirPort.eq(departAirport)
+                                .and(flightSchedule.arriveAirPort.eq(arriveAirport))
+                                .and(flightSchedule.departDate.goe(departDate))
                 ).fetch();
     }
 }
