@@ -1,5 +1,9 @@
 package io.dailyworker.flight.domain;
 
+import io.dailyworker.flight.enumerate.AirportInfo;
+import io.dailyworker.flight.enumerate.CountryInfo;
+import io.dailyworker.flight.enumerate.converter.CountryInfoConverter;
+import io.dailyworker.flight.enumerate.converter.AirportInfoConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +15,28 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AirPort {
     @Id
-    @Column(name = "airport_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Convert(converter = CountryInfoConverter.class)
+    private CountryInfo city;
 
-    public AirPort(String name) {
-        this.name = name;
+    @Convert(converter = AirportInfoConverter.class)
+    private AirportInfo airport;
+
+    public AirPort(CountryInfo city, AirportInfo airport) {
+        this.city = city;
+        this.airport = airport;
+    }
+
+    public String itatCode() {
+        return this.airport.getCode();
+    }
+
+    public String cityName(String language) {
+        if(language.equals("KOR")) {
+            return this.city.getKorName();
+        }
+        return this.city.getEngName();
     }
 }
