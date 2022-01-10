@@ -1,9 +1,9 @@
 package io.dailyworker.flight.enumerate.converter;
 
-import io.dailyworker.flight.enumerate.AirportInfo;
+import io.dailyworker.flight.enumerate.CountryInfo;
 
-public class CountryInfoConverter extends EnumConverter<AirportInfo> {
+public class CountryInfoConverter extends EnumConverter<CountryInfo> {
     public CountryInfoConverter() {
-        super(AirportInfo.class);
+        super(CountryInfo.class);
     }
 }
