@@ -18,10 +18,10 @@ public class AirPort {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Convert(converter = AirportInfoConverter.class)
+    @Convert(converter = CountryInfoConverter.class)
     private CountryInfo city;
 
-    @Convert(converter = CountryInfoConverter.class)
+    @Convert(converter = AirportInfoConverter.class)
     private AirportInfo airport;
 
     public AirPort(CountryInfo city, AirportInfo airport) {
@@ -29,11 +29,11 @@ public class AirPort {
         this.airport = airport;
     }
 
-    public String getItatCode() {
+    public String itatCode() {
         return this.airport.getCode();
     }
 
-    public String getCityName(String language) {
+    public String cityName(String language) {
         if(language.equals("KOR")) {
             return this.city.getKorName();
         }
