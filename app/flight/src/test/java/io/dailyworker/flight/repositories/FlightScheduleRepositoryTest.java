@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,23 +30,23 @@ class FlightScheduleRepositoryTest {
     @Autowired
     AirPlanRepository airPlanRepository;
 
-    private AirPlane airPlane;
+    private Airplane airPlane;
 
     @Transactional
     @BeforeEach
     public void setUp() {
-        airPlane = new AirPlane("SU-123", "707", 100);
-        AirPlaneSeat airPlaneSeat = new AirPlaneSeat(airPlane);
+        airPlane = new Airplane("SU-123", "707", 100);
+        AirplaneSeat airPlaneSeat = new AirplaneSeat(airPlane);
 
-        AirPort gimpoAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.GMP);
-        AirPort jejuAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.JEJU);
-        AirPort incheonAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.INCHEON);
+        Airport gimpoAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.GMP);
+        Airport jejuAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.JEJU);
+        Airport incheonAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.INCHEON);
 
         airPlanRepository.save(airPlane);
 
-        airportRepository.save(jejuAirPort);
-        airportRepository.save(gimpoAirPort);
-        airportRepository.save(incheonAirPort);
+        airportRepository.save(jejuAirport);
+        airportRepository.save(gimpoAirport);
+        airportRepository.save(incheonAirport);
     }
 
     @Test
@@ -53,28 +54,28 @@ class FlightScheduleRepositoryTest {
     @DisplayName("성공적으로 비행 일정 리스트를 가져올 수 있다.")
     public void searchFlightScheduleTest() throws Exception {
         //given
-        LocalDate departDate = LocalDate.of(2022, 1, 5);
-        LocalDate arriveDate = LocalDate.of(2022, 1, 10);
+        ZonedDateTime departDate = LocalDate.of(2022, 1, 5);
+        ZonedDateTime arriveDate = LocalDate.of(2022, 1, 10);
 
-        AirPort jejuAirPort = airportRepository.findByAirport(AirportInfo.JEJU)
+        Airport jejuAirport = airportRepository.findByAirport(AirportInfo.JEJU)
                 .orElseThrow(NoSuchCodeException::new);
 
-        AirPort gimpoAirPort = airportRepository.findByAirport(AirportInfo.GMP)
+        Airport gimpoAirport = airportRepository.findByAirport(AirportInfo.GMP)
                 .orElseThrow(NoSuchCodeException::new);
 
 
-        FlightSchedule flightSchedule = FlightSchedule.createFlightSchedule(airPlane, gimpoAirPort, jejuAirPort, departDate, arriveDate);
+        FlightSchedule flightSchedule = FlightSchedule.createFlightSchedule(airPlane, gimpoAirport, jejuAirport, departDate, arriveDate);
         flightScheduleRepository.save(flightSchedule);
 
         //when
-        List<FlightSchedule> flightSchedules = flightScheduleRepository.findFlightSchedule(gimpoAirPort, jejuAirPort, departDate, arriveDate);
+        List<FlightSchedule> flightSchedules = flightScheduleRepository.findFlightSchedule(gimpoAirport, jejuAirport, departDate, arriveDate);
         FlightSchedule expectedFlightSchedule = flightSchedules.get(0);
 
         //then
         assertAll(
-                () -> assertEquals(expectedFlightSchedule.getAirPlane(), airPlane),
-                () -> assertEquals(expectedFlightSchedule.getArriveAirPort().itatCode(), jejuAirPort.itatCode()),
-                () -> assertEquals(expectedFlightSchedule.getDepartAirPort().itatCode(), gimpoAirPort.itatCode()),
+                () -> assertEquals(expectedFlightSchedule.getAirplane(), airPlane),
+                () -> assertEquals(expectedFlightSchedule.getTo().itatCode(), jejuAirport.itatCode()),
+                () -> assertEquals(expectedFlightSchedule.getFrom().itatCode(), gimpoAirport.itatCode()),
                 () -> assertEquals(expectedFlightSchedule.getArriveDate(), arriveDate),
                 () -> assertEquals(expectedFlightSchedule.getDepartDate(), departDate)
         );
@@ -85,30 +86,30 @@ class FlightScheduleRepositoryTest {
     @DisplayName("여러개의 비행 일정 중 검색 조건에 맞는 비행일정을 찾는다.")
     public void  searchMultipleFlightScheduleTest() throws Exception {
         //given
-        LocalDate containSearchConditionDepartDate = LocalDate.of(2022, 1, 5);
-        LocalDate containSearchConditionArriveDate = LocalDate.of(2022, 1, 10);
-        LocalDate containSearchConditionDepartDate2 = LocalDate.of(2022, 1, 6);
-        LocalDate containSearchConditionArriveDate2 = LocalDate.of(2022, 1, 9);
+        ZonedDateTime containSearchConditionDepartDate = LocalDate.of(2022, 1, 5);
+        ZonedDateTime containSearchConditionArriveDate = LocalDate.of(2022, 1, 10);
+        ZonedDateTime containSearchConditionDepartDate2 = LocalDate.of(2022, 1, 6);
+        ZonedDateTime containSearchConditionArriveDate2 = LocalDate.of(2022, 1, 9);
 
-        LocalDate notContainSearchConditionDepartDate = LocalDate.of(2021, 12, 5);
-        LocalDate notContainSearchConditionArriveDate = LocalDate.of(2021, 12, 10);
+        ZonedDateTime notContainSearchConditionDepartDate = LocalDate.of(2021, 12, 5);
+        ZonedDateTime notContainSearchConditionArriveDate = LocalDate.of(2021, 12, 10);
 
-        AirPort jejuAirPort = airportRepository.findByAirport(AirportInfo.JEJU)
+        Airport jejuAirport = airportRepository.findByAirport(AirportInfo.JEJU)
                 .orElseThrow(NoSuchCodeException::new);
 
-        AirPort gimpoAirPort = airportRepository.findByAirport(AirportInfo.GMP)
+        Airport gimpoAirport = airportRepository.findByAirport(AirportInfo.GMP)
                 .orElseThrow(NoSuchCodeException::new);
 
         List<FlightSchedule> schedules = new ArrayList<>();
 
-        schedules.add(FlightSchedule.createFlightSchedule(airPlane, jejuAirPort, gimpoAirPort, containSearchConditionDepartDate, containSearchConditionArriveDate));
-        schedules.add(FlightSchedule.createFlightSchedule(airPlane, gimpoAirPort, jejuAirPort, containSearchConditionDepartDate2, containSearchConditionArriveDate2));
-        schedules.add(FlightSchedule.createFlightSchedule(airPlane, jejuAirPort, gimpoAirPort, notContainSearchConditionDepartDate, notContainSearchConditionArriveDate));
+        schedules.add(FlightSchedule.createFlightSchedule(airPlane, jejuAirport, gimpoAirport, containSearchConditionDepartDate, containSearchConditionArriveDate));
+        schedules.add(FlightSchedule.createFlightSchedule(airPlane, gimpoAirport, jejuAirport, containSearchConditionDepartDate2, containSearchConditionArriveDate2));
+        schedules.add(FlightSchedule.createFlightSchedule(airPlane, jejuAirport, gimpoAirport, notContainSearchConditionDepartDate, notContainSearchConditionArriveDate));
 
         flightScheduleRepository.saveAll(schedules);
 
         //when
-        List<FlightSchedule> flightSchedules = flightScheduleRepository.findFlightSchedule(gimpoAirPort, jejuAirPort, LocalDate.of(2022, 1, 5), LocalDate.of(2022, 1, 10));
+        List<FlightSchedule> flightSchedules = flightScheduleRepository.findFlightSchedule(gimpoAirport, jejuAirport, LocalDate.of(2022, 1, 5), LocalDate.of(2022, 1, 10));
 
 
         System.out.println("사이즈 " + flightSchedules.size());

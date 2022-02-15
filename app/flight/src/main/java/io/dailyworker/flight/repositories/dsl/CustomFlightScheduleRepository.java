@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface CustomFlightScheduleRepository {
     List<FlightSchedule> findFlightSchedule(Airport departAirport, Airport arriveAirport, ZonedDateTime departDate, ZonedDateTime arriveDate);
-    List<FlightSchedule> findOneWayFlightSchedule(Airport departAirport, Airport arriveAirport, LocalDate departDate);
+    List<FlightSchedule> findOneWayFlightSchedule(Airport departAirport, Airport arriveAirport, ZonedDateTime departDate);
 }

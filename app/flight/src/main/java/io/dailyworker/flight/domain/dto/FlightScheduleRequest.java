@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,10 +15,10 @@ import java.util.List;
 public class FlightScheduleRequest {
     private String requestKey;
     private final List<AirportInfo> airportInfos = new LinkedList<>();
-    private LocalDate date;
+    private ZonedDateTime date;
 
     @Builder
-    public FlightScheduleRequest(String requestKey, AirportInfo departAirPort, AirportInfo arriveAirPort, LocalDate date) {
+    public FlightScheduleRequest(String requestKey, AirportInfo departAirPort, AirportInfo arriveAirPort, ZonedDateTime date) {
         this.requestKey = requestKey;
         this.airportInfos.add(departAirPort);
         this.airportInfos.add(arriveAirPort);

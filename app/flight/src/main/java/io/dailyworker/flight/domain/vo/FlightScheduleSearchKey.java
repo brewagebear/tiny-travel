@@ -4,7 +4,7 @@ import io.dailyworker.flight.domain.dto.FlightScheduleRequest;
 import io.dailyworker.flight.enumerate.AirportInfo;
 
 import java.text.ParseException;
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class FlightScheduleSearchKey {
         return AirportInfo.find(this.keys.get(ARRIVE_AIRPORT_ITAT_INDEX));
     }
 
-    public LocalDate date() {
-        return LocalDate.parse(this.keys.get(DEPART_DATE_INDEX), DateTimeFormatter.ofPattern("yyyyMMdd"));
+    public ZonedDateTime date() {
+        return ZonedDateTime.parse(this.keys.get(DEPART_DATE_INDEX), DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 }

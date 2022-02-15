@@ -1,8 +1,8 @@
 package io.dailyworker.flight.controller;
 
-import io.dailyworker.flight.domain.AirPlane;
-import io.dailyworker.flight.domain.AirPlaneSeat;
-import io.dailyworker.flight.domain.AirPort;
+import io.dailyworker.flight.domain.Airplane;
+import io.dailyworker.flight.domain.AirplaneSeat;
+import io.dailyworker.flight.domain.Airport;
 import io.dailyworker.flight.domain.FlightSchedule;
 import io.dailyworker.flight.enumerate.AirportInfo;
 import io.dailyworker.flight.enumerate.CountryInfo;
@@ -21,6 +21,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @ExtendWith(SpringExtension.class)
@@ -45,20 +46,20 @@ class FlightScheduleControllerTest {
     @BeforeEach
     @Transactional
     public void createFlightSchedule() {
-        AirPlane airPlane = new AirPlane("SU-123", "707", 100);
-        AirPlaneSeat airPlaneSeat = new AirPlaneSeat(airPlane);
+        Airplane airPlane = new Airplane("SU-123", "707", 100);
+        AirplaneSeat airPlaneSeat = new AirplaneSeat(airPlane);
 
-        AirPort gimpoAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.GMP);
-        AirPort jejuAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.JEJU);
+        Airport gimpoAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.GMP);
+        Airport jejuAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.JEJU);
 
         airPlanRepository.save(airPlane);
-        airportRepository.save(gimpoAirPort);
-        airportRepository.save(jejuAirPort);
+        airportRepository.save(gimpoAirport);
+        airportRepository.save(jejuAirport);
 
-        LocalDate departDate = LocalDate.of(2022, 1, 5);
-        LocalDate arriveDate = LocalDate.of(2022, 1, 10);
+        ZonedDateTime departDate = LocalDate.of(2022, 1, 5);
+        ZonedDateTime arriveDate = LocalDate.of(2022, 1, 10);
 
-        FlightSchedule flightSchedule = FlightSchedule.createFlightSchedule(airPlane, gimpoAirPort, jejuAirPort, departDate, arriveDate);
+        FlightSchedule flightSchedule = FlightSchedule.createFlightSchedule(airPlane, gimpoAirport, jejuAirport, departDate, arriveDate);
         flightScheduleRepository.save(flightSchedule);
     }
 

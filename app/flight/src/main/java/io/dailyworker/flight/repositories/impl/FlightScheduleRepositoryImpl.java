@@ -35,7 +35,7 @@ public class FlightScheduleRepositoryImpl implements CustomFlightScheduleReposit
     @Override
     public List<FlightSchedule> findOneWayFlightSchedule(@NotNull Airport departAirport,
                                                          @NotNull Airport arriveAirport,
-                                                         @NotNull LocalDate departDate) {
+                                                         @NotNull ZonedDateTime departDate) {
         QFlightSchedule flightSchedule = QFlightSchedule.flightSchedule;
 
         return queryFactory.selectFrom(flightSchedule)
