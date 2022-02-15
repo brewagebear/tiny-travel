@@ -1,7 +1,7 @@
 package io.dailyworker.flight.repositories.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import io.dailyworker.flight.domain.AirPort;
+import io.dailyworker.flight.domain.Airport;
 import io.dailyworker.flight.domain.FlightSchedule;
 import io.dailyworker.flight.domain.QFlightSchedule;
 import io.dailyworker.flight.repositories.dsl.CustomFlightScheduleRepository;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Repository
@@ -19,28 +20,28 @@ public class FlightScheduleRepositoryImpl implements CustomFlightScheduleReposit
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<FlightSchedule> findFlightSchedule(AirPort departAirPort, AirPort arriveAirPort, LocalDate departDate, LocalDate arriveDate) {
+    public List<FlightSchedule> findFlightSchedule(Airport departAirport, Airport arriveAirport, ZonedDateTime departDate, ZonedDateTime arriveDate) {
         QFlightSchedule flightSchedule = QFlightSchedule.flightSchedule;
 
         return queryFactory.selectFrom(flightSchedule)
                 .where(
-                        flightSchedule.departAirPort.eq(departAirPort)
-                                .and(flightSchedule.arriveAirPort.eq(arriveAirPort))
+                        flightSchedule.from.eq(departAirport)
+                                .and(flightSchedule.to.eq(arriveAirport))
                                 .and(flightSchedule.departDate.between(departDate, arriveDate))
                                 .and(flightSchedule.arriveDate.between(departDate, arriveDate))
                 ).fetch();
     }
 
     @Override
-    public List<FlightSchedule> findOneWayFlightSchedule(@NotNull AirPort departAirport,
-                                                         @NotNull AirPort arriveAirport,
+    public List<FlightSchedule> findOneWayFlightSchedule(@NotNull Airport departAirport,
+                                                         @NotNull Airport arriveAirport,
                                                          @NotNull LocalDate departDate) {
         QFlightSchedule flightSchedule = QFlightSchedule.flightSchedule;
 
         return queryFactory.selectFrom(flightSchedule)
                 .where(
-                        flightSchedule.departAirPort.eq(departAirport)
-                                .and(flightSchedule.arriveAirPort.eq(arriveAirport))
+                        flightSchedule.from.eq(departAirport)
+                                .and(flightSchedule.to.eq(arriveAirport))
                                 .and(flightSchedule.departDate.goe(departDate))
                 ).fetch();
     }
