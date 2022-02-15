@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://dailyworker.github.io/tiny-travel/flight/schemas/types"
+        xmlns:tns="http://dailyworker.github.io/tiny-travel/flight/schemas/types"
+        elementFormDefault="qualified">
+
+    <complexType name="FlightSchedule">
+        <sequence>
+            <element name="AirPlane" type="tns:Airplane"/>
+            <element name="departDate" type="dateTime"/>
+            <element name="from" type="tns:Airport"/>
+            <element name="arriveDate" type="dateTime"/>
+            <element name="to" type="tns:Airport"/>
+        </sequence>
+    </complexType>
+
+    <complexType name="Airplane">
+        <sequence>
+            <element name="flightModelName" type="string"/>
+            <element name="flightNumber" type="string"/>
+            <element name="available" type="int" />
+        </sequence>
+    </complexType>
+
+    <complexType name="Airport">
+        <all>
+            <element name="city" type="string"/>
+            <element name="airport" type="string"/>
+        </all>
+    </complexType>
+</schema>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://dailyworker.github.io/tiny-travel/flight/schemas/messages"
+        xmlns:tns="http://dailyworker.github.io/tiny-travel/flight/schemas/messages"
+        xmlns:types="http://dailyworker.github.io/tiny-travel/flight/schemas/types"
+        elementFormDefault="qualified">
+
+    <import namespace="http://dailyworker.github.io/tiny-travel/flight/schemas/types"
+            schemaLocation="types.xsd"/>
+
+    <element name="GetFlightsRequest">
+        <complexType>
+            <all>
+                <element name="from" type="types:Airport"/>
+                <element name="to" type="types:Airport"/>
+                <element name="departureDate" type="date"/>
+            </all>
+        </complexType>
+    </element>
+</schema>
