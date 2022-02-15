@@ -31,7 +31,7 @@ repositories {
 task genJaxb {
     ext.sourcesDir = "${buildDir}/generated/jaxb"
     ext.classesDir = "${buildDir}/classes/jaxb"
-    ext.schema = "src/main/resources/message.xsd"
+    ext.schema = "src/main/resources/messages.xsd"
 
     outputs.dir classesDir
 
@@ -74,6 +74,7 @@ dependencies {
 
     // WSDL (Web Service) Dependencies
     implementation 'wsdl4j:wsdl4j'
+    implementation 'org.apache.ws.xmlschema:xmlschema-core:2.2.5'
     // Generate jaxb Classes from xsd
     jaxb('com.sun.xml.bind:jaxb-xjc:2.3.1',
          'com.sun.xml.bind:jaxb-impl:2.3.1',
