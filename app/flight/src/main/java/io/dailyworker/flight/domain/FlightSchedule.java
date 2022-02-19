@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Entity
 @Getter
@@ -17,26 +19,34 @@ public class FlightSchedule {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airplane_id")
-    private AirPlane airPlane;
+    private Airplane airplane;
 
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
-    private AirPort departAirPort;
+    private Airport from;
 
     @JoinColumn
     @ManyToOne(fetch = FetchType.LAZY)
-    private AirPort arriveAirPort;
+    private Airport to;
 
-    private LocalDate departDate;
-    private LocalDate arriveDate;
+    private Instant departAt;
+    private Instant arriveAt;
 
-    public static FlightSchedule createFlightSchedule(AirPlane airPlane, AirPort departAirPort, AirPort arriveAirPort, LocalDate departDate, LocalDate arriveDate) {
+    public static FlightSchedule createFlightSchedule(Airplane airPlane, Airport departAirport, Airport arriveAirport, Instant departAt, Instant arriveAt) {
         FlightSchedule flightSchedule = new FlightSchedule();
-        flightSchedule.airPlane = airPlane;
-        flightSchedule.departAirPort = departAirPort;
-        flightSchedule.arriveAirPort = arriveAirPort;
-        flightSchedule.departDate = departDate;
-        flightSchedule.arriveDate = arriveDate;
+        flightSchedule.airplane = airPlane;
+        flightSchedule.from = departAirport;
+        flightSchedule.to = arriveAirport;
+        flightSchedule.departAt = departAt;
+        flightSchedule.arriveAt = arriveAt;
         return flightSchedule;
+    }
+
+    public ZonedDateTime instantToZonedDateTime(Instant instant) {
+        return instant.atZone(ZoneId.of("UTC"));
+    }
+
+    public Instant zonedDateTimeToInstant(ZonedDateTime zonedDateTime) {
+        return zonedDateTime.toInstant();
     }
 }

@@ -11,26 +11,26 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AirPlane {
+public class Airplane {
     @Id
     @Column(name = "airplane_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "airplane")
-    private final List<AirPlaneSeat> seats = new ArrayList<>();
+    private final List<AirplaneSeat> seats = new ArrayList<>();
 
     private String flightModelName;
     private String flightNumber;
     private int available;
 
-    public AirPlane(String flightNumber, String flightModelName, int available) {
+    public Airplane(String flightNumber, String flightModelName, int available) {
         this.flightNumber = flightNumber;
         this.flightModelName = flightModelName;
         this.available = available;
     }
 
-    public void addSeat(AirPlaneSeat seat) {
+    public void addSeat(AirplaneSeat seat) {
         seats.add(seat);
         this.available = available;
     }

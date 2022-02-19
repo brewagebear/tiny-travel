@@ -19,6 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 .idea
+.idea/*.xml
 *.iws
 *.iml
 *.ipr
@@ -35,3 +36,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### XSD & Query DSL Generate Classes ###
+generated

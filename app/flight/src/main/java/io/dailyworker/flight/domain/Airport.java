@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class AirPort {
+public class Airport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +24,7 @@ public class AirPort {
     @Convert(converter = AirportInfoConverter.class)
     private AirportInfo airport;
 
-    public AirPort(CountryInfo city, AirportInfo airport) {
+    public Airport(CountryInfo city, AirportInfo airport) {
         this.city = city;
         this.airport = airport;
     }

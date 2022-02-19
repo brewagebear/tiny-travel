@@ -21,10 +21,48 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    jaxb
 }
 
 repositories {
     mavenCentral()
+}
+
+task genJaxb {
+    ext.sourcesDir = "${buildDir}/generated/jaxb"
+    ext.classesDir = "${buildDir}/classes/jaxb"
+    ext.schema = "src/main/resources/messages.xsd"
+
+    outputs.dir classesDir
+
+    doLast() {
+        project.ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+                    classpath: configurations.jaxb.asPath
+            mkdir(dir: sourcesDir)
+            mkdir(dir: classesDir)
+
+            xjc(destdir: sourcesDir, schema: schema) {
+                arg(value: "-wsdl")
+                produces(dir: sourcesDir, includes: "**/*.java")
+            }
+
+            javac(destdir: classesDir, source: 11, target: 11, debug: true,
+                    debugLevel: "lines,vars,source",
+                    classpath: configurations.jaxb.asPath) {
+                src(path: sourcesDir)
+                include(name: "**/*.java")
+                include(name: "*.java")
+            }
+
+            copy(todir: classesDir) {
+                fileset(dir: sourcesDir, erroronmissingdir: false) {
+                    exclude(name: "**/*.java")
+                }
+            }
+        }
+    }
+
 }
 
 dependencies {
@@ -32,6 +70,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+
+    // WSDL (Web Service) Dependencies
+    implementation 'wsdl4j:wsdl4j'
+    implementation 'org.apache.ws.xmlschema:xmlschema-core:2.2.5'
+    // Generate jaxb Classes from xsd
+    jaxb('com.sun.xml.bind:jaxb-xjc:2.3.1',
+         'com.sun.xml.bind:jaxb-impl:2.3.1',
+         'org.glassfish.jaxb:jaxb-runtime:2.3.3')
+    implementation(files(genJaxb.classesDir).builtBy(genJaxb))
 
     //QueryDSL Dependencies
     implementation "com.querydsl:querydsl-core:${queryDslVersion}"
@@ -66,3 +114,5 @@ sourceSets {
 test {
     useJUnitPlatform()
 }
+
+compileJava.dependsOn genJaxb

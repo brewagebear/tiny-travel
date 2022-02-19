@@ -1,8 +1,8 @@
 package io.dailyworker.flight.service;
 
-import io.dailyworker.flight.domain.AirPlane;
-import io.dailyworker.flight.domain.AirPlaneSeat;
-import io.dailyworker.flight.domain.AirPort;
+import io.dailyworker.flight.domain.Airplane;
+import io.dailyworker.flight.domain.AirplaneSeat;
+import io.dailyworker.flight.domain.Airport;
 import io.dailyworker.flight.domain.FlightSchedule;
 import io.dailyworker.flight.domain.vo.FlightScheduleSearchKey;
 import io.dailyworker.flight.enumerate.AirportInfo;
@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,28 +38,28 @@ class FlightScheduleServiceTest {
     @Autowired
     FlightScheduleService flightScheduleService;
 
-    private AirPlane airPlane;
+    private Airplane airPlane;
 
     @BeforeEach
     @Transactional
     public void setUp() {
-        airPlane = new AirPlane("SU-123", "707", 100);
-        AirPlaneSeat airPlaneSeat = new AirPlaneSeat(airPlane);
+        airPlane = new Airplane("SU-123", "707", 100);
+        AirplaneSeat airPlaneSeat = new AirplaneSeat(airPlane);
 
-        AirPort gimpoAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.GMP);
-        AirPort jejuAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.JEJU);
-        AirPort incheonAirPort = new AirPort(CountryInfo.DOMESTIC, AirportInfo.INCHEON);
+        Airport gimpoAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.GMP);
+        Airport jejuAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.JEJU);
+        Airport incheonAirport = new Airport(CountryInfo.DOMESTIC, AirportInfo.INCHEON);
 
         airPlanRepository.save(airPlane);
 
-        airportRepository.save(jejuAirPort);
-        airportRepository.save(gimpoAirPort);
-        airportRepository.save(incheonAirPort);
+        airportRepository.save(jejuAirport);
+        airportRepository.save(gimpoAirport);
+        airportRepository.save(incheonAirport);
 
-        LocalDate departDate = LocalDate.of(2022, 1, 5);
-        LocalDate arriveDate = LocalDate.of(2022, 1, 10);
+        ZonedDateTime departDate = LocalDate.of(2022, 1, 5);
+        ZonedDateTime arriveDate = LocalDate.of(2022, 1, 10);
 
-        FlightSchedule flightSchedule = FlightSchedule.createFlightSchedule(airPlane, gimpoAirPort, jejuAirPort, departDate, arriveDate);
+        FlightSchedule flightSchedule = FlightSchedule.createFlightSchedule(airPlane, gimpoAirport, jejuAirport, departDate, arriveDate);
         flightScheduleRepository.save(flightSchedule);
     }
 
@@ -74,8 +75,8 @@ class FlightScheduleServiceTest {
         FlightSchedule flightSchedule = flightSchedules.get(0);
 
         assertAll(
-                () -> assertEquals(flightSchedule.getDepartAirPort().itatCode(), AirportInfo.GMP.getCode()),
-                () -> assertEquals(flightSchedule.getArriveAirPort().itatCode(), AirportInfo.JEJU.getCode()),
+                () -> assertEquals(flightSchedule.getFrom().itatCode(), AirportInfo.GMP.getCode()),
+                () -> assertEquals(flightSchedule.getTo().itatCode(), AirportInfo.JEJU.getCode()),
                 () -> assertEquals(flightSchedule.getDepartDate(), LocalDate.of(2022, 01, 05))
         );
     }

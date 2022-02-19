@@ -1,13 +1,13 @@
 package io.dailyworker.flight.domain;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AirPlaneSeat {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class AirplaneSeat {
     @Id
     @Column(name = "seat_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,13 +15,13 @@ public class AirPlaneSeat {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "airplane_id")
-    private AirPlane airplane;
+    private Airplane airplane;
 
-    public AirPlaneSeat(AirPlane airplane) {
+    public AirplaneSeat(Airplane airplane) {
         this.airplane = airplane;
     }
 
-    public void updateAirPlane(AirPlane airPlane) {
+    public void updateAirPlane(Airplane airPlane) {
         this.airplane = airPlane;
         airPlane.getSeats().add(this);
     }

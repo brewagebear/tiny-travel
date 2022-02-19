@@ -5,6 +5,8 @@ import io.dailyworker.flight.enumerate.AirportInfo;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class FlightScheduleSearchKey {
     public FlightScheduleSearchKey(String key) throws ParseException {
         this.originRequestKey = key;
         this.keys = List.of(key.split("-"));
-        if(keys.size() != KEY_SIZE) {
+        if (keys.size() != KEY_SIZE) {
             throw new ParseException("key size must be 3", 3);
         }
     }
@@ -42,7 +44,8 @@ public class FlightScheduleSearchKey {
         return AirportInfo.find(this.keys.get(ARRIVE_AIRPORT_ITAT_INDEX));
     }
 
-    public LocalDate date() {
-        return LocalDate.parse(this.keys.get(DEPART_DATE_INDEX), DateTimeFormatter.ofPattern("yyyyMMdd"));
+    public ZonedDateTime date() {
+        return LocalDate.parse(this.keys.get(DEPART_DATE_INDEX), DateTimeFormatter.ofPattern("yyyyMMdd"))
+                .atStartOfDay(ZoneId.systemDefault());
     }
 }
