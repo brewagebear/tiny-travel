@@ -1,22 +1,19 @@
 package io.dailyworker.flight.ws;
 
 import io.dailyworker.flight.domain.FlightSchedule;
+import io.dailyworker.flight.domain.dto.FlightScheduleRequest;
+import io.dailyworker.flight.domain.vo.FlightScheduleSearchKey;
 import io.dailyworker.flight.service.FlightScheduleService;
 import io.dailyworker.flight.shema.support.SchemaConversionUtils;
+import io.github.dailyworker.tiny_travel.flight.schemas.messages.GetFlightsResponse;
+import io.github.dailyworker.tiny_travel.flight.schemas.messages.ObjectFactory;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.ws.server.endpoint.annotation.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-
-import io.github.dailyworker.tiny_travel.flight.schemas.messages.GetFlightsResponse;
-import io.github.dailyworker.tiny_travel.flight.schemas.messages.ObjectFactory;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.ParseException;
 import java.util.List;
 
 import static io.dailyworker.flight.ws.constants.FlightWebserviceConstant.GET_FLIGHTS_REQUEST;
@@ -26,8 +23,6 @@ import static io.dailyworker.flight.ws.constants.FlightWebserviceConstant.MESSAG
 @Slf4j
 @Endpoint
 public class FlightEndpoint {
-    private static final Log logger = LogFactory.getLog(FlightEndpoint.class);
-
     private final ObjectFactory objectFactory = new ObjectFactory();
     private final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 
@@ -40,24 +35,19 @@ public class FlightEndpoint {
     @PayloadRoot(localPart = GET_FLIGHTS_REQUEST, namespace = MESSAGES_NAMESPACE)
     @Namespace(prefix = "m", uri = MESSAGES_NAMESPACE)
     @ResponsePayload
-    public GetFlightsResponse getFlights(@XPathParam("//m:from") String from, @XPathParam("//m:to") String to,
-                                         @XPathParam("//m:departureDate") String departureDateString) throws DatatypeConfigurationException {
+    public GetFlightsResponse getFlights(@XPathParam("//m:searchKey") String searchKey)
+            throws DatatypeConfigurationException, ParseException {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Received GetFlightsRequest '" + from + "' to '" + to + "' on " + departureDateString);
-        }
-        
+        FlightScheduleRequest flightSearchKey = new FlightScheduleSearchKey(searchKey).toRequest();
 
-        LocalDate departureDate = LocalDate.parse(departureDateString, DateTimeFormatter.ISO_DATE);
-
-        List<FlightSchedule> flights = flightScheduleService.searchSchedule(from, to, departureDate);
+        List<FlightSchedule> flights = flightScheduleService.searchSchedule(flightSearchKey);
 
         GetFlightsResponse response = objectFactory.createGetFlightsResponse();
+
         for (FlightSchedule domainFlightSchedule : flights) {
             response.getFlightSchedule()
                     .add(SchemaConversionUtils.toSchemaType(domainFlightSchedule));
         }
-
         return response;
     }
 }

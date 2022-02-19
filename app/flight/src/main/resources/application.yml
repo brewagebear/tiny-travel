@@ -1,12 +1,26 @@
+server:
+  port: 8081
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
     driver-class-name: org.h2.Driver
   jpa:
-    show-sql: true
     database-platform: org.hibernate.dialect.H2Dialect
-#    hibernate:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+#        generate_statistics: true
+  #    hibernate:
 #      ddl-auto: create-drop
   h2:
     console:
       enabled: true
+logging:
+  level:
+    org.springframework:
+      data: debug
+      ws: debug
+      web: debug
+    com.querydsl:
+      sql: debug

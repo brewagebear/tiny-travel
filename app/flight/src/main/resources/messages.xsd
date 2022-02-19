@@ -10,11 +10,9 @@
 
     <element name="GetFlightsRequest">
         <complexType>
-            <all>
-                <element name="from" type="types:Airport"/>
-                <element name="to" type="types:Airport"/>
-                <element name="departureDate" type="date"/>
-            </all>
+            <sequence>
+                <element name="searchKey" type="string" minOccurs="0" maxOccurs="unbounded" />
+            </sequence>
         </complexType>
     </element>
 

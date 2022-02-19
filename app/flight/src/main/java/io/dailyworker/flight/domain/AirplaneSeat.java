@@ -1,12 +1,12 @@
 package io.dailyworker.flight.domain;
 
 import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AirplaneSeat {
     @Id
     @Column(name = "seat_id")
