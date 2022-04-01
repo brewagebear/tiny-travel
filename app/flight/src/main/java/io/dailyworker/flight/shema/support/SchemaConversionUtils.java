@@ -36,7 +36,6 @@ public abstract class SchemaConversionUtils {
         Airplane schemaAirplane = new Airplane();
         schemaAirplane.setFlightNumber(domainAirplane.getFlightNumber());
         schemaAirplane.setFlightModelName(domainAirplane.getFlightModelName());
-        schemaAirplane.setAvailable(domainAirplane.getAvailable());
         return schemaAirplane;
     }
 

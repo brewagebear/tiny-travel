@@ -89,6 +89,9 @@ dependencies {
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 
+    // M1 Dependency Error
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.72.Final:osx-aarch_64'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -101,6 +104,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.ws:spring-ws-test'
 }
 
 sourceSets {
